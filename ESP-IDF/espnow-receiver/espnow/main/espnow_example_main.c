@@ -20,6 +20,7 @@
 #include "freertos/semphr.h"
 #include "freertos/timers.h"
 #include "freertos/event_groups.h"
+#include "freertos/task.h"
 #include "nvs_flash.h"
 #include "esp_event.h"
 #include "esp_netif.h"
@@ -29,15 +30,25 @@
 #include "esp_now.h"
 #include "esp_crc.h"
 #include "espnow_example.h"
+//#include "protocol_examples_common.h"
 
 #include "lwip/err.h"
 #include "lwip/sys.h"
+#include "esp_tls.h"
+
+
+#include "esp_http_client.h"
+#include "cJSON.h"
 
 #define ESPNOW_MAXDELAY 512
 
 #define EXAMPLE_ESP_WIFI_SSID "Dwifi"
 #define EXAMPLE_ESP_WIFI_PASS "00000001"
 #define EXAMPLE_ESP_MAXIMUM_RETRY 100
+
+#define MAX_HTTP_RECV_BUFFER 512
+#define MAX_HTTP_OUTPUT_BUFFER 2048
+static const char *TAG1 = "HTTP_CLIENT";
 
 static EventGroupHandle_t s_wifi_event_group;
 
@@ -54,7 +65,82 @@ static xQueueHandle s_example_espnow_queue;
 static uint8_t s_example_broadcast_mac[ESP_NOW_ETH_ALEN] = {0x3C, 0x61, 0x05, 0x13, 0x6D, 0x0C};
 static uint16_t s_example_espnow_seq[EXAMPLE_ESPNOW_DATA_MAX] = { 0, 0 };
 
+int temp;
+int humidity;
+
 static void example_espnow_deinit(example_espnow_send_param_t *send_param);
+
+//http_event_Handler
+esp_err_t _http_event_handler(esp_http_client_event_t *evt)
+{
+    static char *output_buffer;  // Buffer to store response of http request from event handler
+    static int output_len;       // Stores number of bytes read
+    switch(evt->event_id) {
+        case HTTP_EVENT_ERROR:
+            ESP_LOGD(TAG1, "HTTP_EVENT_ERROR");
+            break;
+        case HTTP_EVENT_ON_CONNECTED:
+            ESP_LOGD(TAG1, "HTTP_EVENT_ON_CONNECTED");
+            break;
+        case HTTP_EVENT_HEADER_SENT:
+            ESP_LOGD(TAG1, "HTTP_EVENT_HEADER_SENT");
+            break;
+        case HTTP_EVENT_ON_HEADER:
+            ESP_LOGD(TAG1, "HTTP_EVENT_ON_HEADER, key=%s, value=%s", evt->header_key, evt->header_value);
+            break;
+        case HTTP_EVENT_ON_DATA:
+            ESP_LOGD(TAG1, "HTTP_EVENT_ON_DATA, len=%d", evt->data_len);
+            /*
+             *  Check for chunked encoding is added as the URL for chunked encoding used in this example returns binary data.
+             *  However, event handler can also be used in case chunked encoding is used.
+             */
+
+            if (!esp_http_client_is_chunked_response(evt->client)) {
+                // If user_data buffer is configured, copy the response into the buffer
+                if (evt->user_data) {
+                    memcpy(evt->user_data + output_len, evt->data, evt->data_len);
+                } else {
+                    if (output_buffer == NULL) {
+                        output_buffer = (char *) malloc(esp_http_client_get_content_length(evt->client));
+                        output_len = 0;
+                        if (output_buffer == NULL) {
+                            ESP_LOGE(TAG1, "Failed to allocate memory for output buffer");
+                            return ESP_FAIL;
+                        }
+                    }
+                    memcpy(output_buffer + output_len, evt->data, evt->data_len);
+                }
+                output_len += evt->data_len;
+            }
+
+            break;
+        case HTTP_EVENT_ON_FINISH:
+            ESP_LOGD(TAG1, "HTTP_EVENT_ON_FINISH");
+            if (output_buffer != NULL) {
+                // Response is accumulated in output_buffer. Uncomment the below line to print the accumulated response
+                // ESP_LOG_BUFFER_HEX(TAG, output_buffer, output_len);
+                free(output_buffer);
+                output_buffer = NULL;
+            }
+            output_len = 0;
+            break;
+        case HTTP_EVENT_DISCONNECTED:
+            ESP_LOGI(TAG1, "HTTP_EVENT_DISCONNECTED");
+            int mbedtls_err = 0;
+            esp_err_t err = esp_tls_get_and_clear_last_error(evt->data, &mbedtls_err, NULL);
+            if (err != 0) {
+                if (output_buffer != NULL) {
+                    free(output_buffer);
+                    output_buffer = NULL;
+                }
+                output_len = 0;
+                ESP_LOGI(TAG1, "Last esp error code: 0x%x", err);
+                ESP_LOGI(TAG1, "Last mbedtls failure: 0x%x", mbedtls_err);
+            }
+            break;
+    }
+    return ESP_OK;
+} 
 
 /* WiFi should start before using ESPNOW */
 static void example_wifi_init(void)
@@ -235,6 +321,8 @@ int example_espnow_data_parse(uint8_t *data, uint16_t data_len, uint8_t *state, 
     crc = buf->crc;
     buf->crc = 0;
     crc_cal = esp_crc16_le(UINT16_MAX, (uint8_t const *)buf, data_len);
+    temp=buf->payload[0];
+    humidity=buf->payload[1];
     if(buf->payload[2]==1)
      {printf("Temperature recived is : %d \n",buf->payload[0]);
      printf("Humidity recived is : %d \n",buf->payload[1]);}
@@ -468,6 +556,7 @@ static esp_err_t example_espnow_init(void)
 
     xTaskCreate(example_espnow_task, "example_espnow_task", 2048, send_param, 4, NULL);
 
+
     return ESP_OK;
 }
 
@@ -490,9 +579,51 @@ void NVS_Init(void)
     ESP_ERROR_CHECK(ret);
     ESP_LOGI("esp_err_t类型返回值：", " %d\n", ret);
 }
+//Creating Json
+
+void http_post_demo(void)
+ {
+     
+     cJSON *root  = cJSON_CreateObject();
+    cJSON_AddItemToObject(root , "api_key",   cJSON_CreateString("DaoBanMoJie_JiaIT"));
+    cJSON_AddItemToObject(root , "id",        cJSON_CreateString("2"));
+    cJSON_AddItemToObject(root , "Temperature",      cJSON_CreateNumber(temp));//(buf->payload[0]
+    cJSON_AddItemToObject(root , "Humidity",      cJSON_CreateNumber(humidity));//buf->payload[1]
+   // we can send the motion cJSON_AddItemToObject(root , "value1",    cJSON_CreateNumber(1230));
+    const char *post_data = cJSON_Print(root);
+
+        esp_http_client_config_t config = {
+        .method = HTTP_METHOD_POST,  
+        .url = "http://xu3u04bj6capstone.com/post-sensor-data.php",
+        .event_handler = _http_event_handler,
+    };
+    esp_http_client_handle_t client = esp_http_client_init(&config);
+    esp_err_t t1 = esp_http_client_set_post_field(client, post_data, strlen(post_data));//set post data
+    if(t1 == ESP_OK)
+    {
+        printf("post data create successfully!, string posted is %s \n", post_data);
+    }
+    //printf("pst data : %s\n", post_data);
+    esp_err_t err = esp_http_client_perform(client);//perform the transfer
+    if (err == ESP_OK) {
+        ESP_LOGI(
+            TAG1, "HTTP POST Status = %d, content_length = %d",esp_http_client_get_status_code(client),esp_http_client_get_content_length(client));
+    } else {
+        ESP_LOGE(TAG1, "HTTP POST request failed: %s", esp_err_to_name(err));
+    }
+    esp_http_client_cleanup(client);
 
 
 
+ }
+
+static void http_test_task(void *pvParameters)
+{
+   
+    http_post_demo();
+    ESP_LOGI(TAG1, "http 示例结束");
+    vTaskDelete(NULL);
+}
 
 
 
@@ -510,7 +641,11 @@ void app_main(void)
     //example_wifi_init();
     NVS_Init();
     wifi_init_sta();
-    example_espnow_init();
+    example_espnow_init();// set up espnow protocol
+
+    while(true){
+    xTaskCreate(&http_test_task, "http_test_task", 8192, NULL, 5, NULL);
+    vTaskDelay(pdMS_TO_TICKS(3000));
+    }
     
-   
 }

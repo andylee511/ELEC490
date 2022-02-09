@@ -10,9 +10,11 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="194dp"
+        android:layout_height="216dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:scaleType="center"
-        android:src="@drawable/cloud"
+        android:src="@drawable/flower"
         android:visibility="visible"
         tools:visibility="visible" />
 
@@ -22,12 +24,12 @@
         android:layout_height="wrap_content"
         android:text="Sign up"
         android:textColor="@color/white"
-        android:textSize="56dp"
-        android:layout_margin="50dp"
-        android:gravity="center"
+        android:textSize="43dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="20dp"
+        android:gravity="left"
         android:textStyle="bold"
-
-
+        android:typeface="serif"
         />
 
 
@@ -37,43 +39,46 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/sign_up"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="150dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="70dp"
         android:background="@drawable/edittextbackgroud"
+        android:drawableLeft="@drawable/ic_baseline_perm_identity_24"
+        android:drawablePadding="20dp"
         android:hint="Username"
         android:padding="20dp"
-        android:textColor="#0B64AA"
-        android:textColorHint="#0B64AA"
+        android:textColor="#9FA2A5"
+        android:textColorHint="#0B0600"
         android:textSize="20dp"
-        android:drawableLeft="@drawable/ic_baseline_perm_identity_24"
-        android:drawablePadding="20dp"/>
+        android:typeface="serif"/>
+
 
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageView"
+        android:layout_below="@id/sign_up"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="250dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="70dp"
         android:background="@drawable/edittextbackgroud"
         android:hint="Password"
         android:padding="20dp"
         android:textColor="#0B64AA"
-        android:textColorHint="#0B64AA"
+        android:textColorHint="#0B0600"
         android:textSize="20dp"
         android:drawableLeft="@drawable/ic_baseline_info_24"
-        android:drawablePadding="20dp"/>
+        android:drawablePadding="20dp"
+        android:typeface="serif"/>
 
     <EditText
         android:id="@+id/confirm_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/user_name"
+        android:layout_below="@id/sign_up"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="350dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/edittextbackgroud"
@@ -82,39 +87,44 @@
         android:hint="Confirm Password"
         android:padding="20dp"
         android:textColor="#0B64AA"
-        android:textColorHint="#0B64AA"
+        android:textColorHint="#0B0600"
         android:textSize="20dp"
+        android:typeface="serif"
         />
 
     <Button
         android:id="@+id/register"
-        android:layout_width="match_parent"
+        android:layout_width="315dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/confirm_password"
+        android:layout_below="@id/sign_up"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="450dp"
         android:layout_marginBottom="20dp"
 
-        android:backgroundTint="#2196F3"
+        android:backgroundTint="#0B0600"
         android:text="REGISTER"
         android:textColor="@color/white"
-        android:textColorHint="#0B64AA"
-        android:textSize="20dp" />
+        android:textColorHint="#0B0600"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:typeface="serif"/>
 
     <Button
         android:id="@+id/had_account"
-        android:layout_width="match_parent"
+        android:layout_width="366dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/confirm_password"
+        android:layout_below="@id/sign_up"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="550dp"
         android:layout_marginBottom="20dp"
 
-        android:backgroundTint="#F7F9FA"
+        android:backgroundTint="@color/white"
         android:text="ALREADY HAVE AN ACCOUNT"
-        android:textColor="#0B64AA"
-        android:textColorHint="#0B64AA"
-        android:textSize="15dp" />
+        android:textColor="@color/black"
+        android:textColorHint="#0B0600"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:typeface="serif" />
 
 
 </RelativeLayout>

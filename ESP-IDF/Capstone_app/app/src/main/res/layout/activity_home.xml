@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeActivity">
+
+
+
+
+
+
+    <TextView
+    android:id="@+id/header_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Home Environment "
+    android:textColor="@color/black"
+    android:textSize="37dp"
+    android:layout_marginTop="40dp"
+    android:layout_marginStart="20dp"
+    android:gravity="left"
+        android:typeface="serif"
+        />
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="100dp"
+        android:gravity="left"
+        android:text="View your sensor information "
+        android:textColor="#787777"
+        android:textSize="20dp"
+        android:typeface="serif"/>
+
+
+    <Button
+        android:id="@+id/temp"
+        android:layout_width="178dp"
+        android:layout_height="139dp"
+        android:layout_below="@id/subtitle"
+
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="286dp"
+        android:layout_marginBottom="20dp"
+
+        android:backgroundTint="#ECECEC"
+        android:text="Temperature"
+        android:textAlignment="gravity"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:textColorHint="#787777"
+        android:textSize="15dp"
+        android:typeface="serif"
+        android:drawableTop="@drawable/ic_outline_ac_unit_24"
+
+        />
+
+
+    <TextView
+        android:id="@+id/temp_text"
+        android:layout_width="178dp"
+        android:layout_height="50dp"
+
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="507dp"
+        android:layout_marginEnd="6dp"
+        android:backgroundTint="#ECECEC"
+        android:elevation="200dp"
+        android:gravity="center_horizontal"
+        android:text="0"
+        android:textAlignment="gravity"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:typeface="serif"
+        />
+
+    <Button
+        android:id="@+id/humidity"
+        android:layout_width="178dp"
+        android:layout_height="139dp"
+        android:layout_below="@id/subtitle"
+
+
+        android:layout_marginStart="220dp"
+        android:layout_marginTop="286dp"
+        android:layout_marginBottom="20dp"
+
+        android:backgroundTint="#ECECEC"
+        android:text="Humidity"
+        android:textColor="@color/black"
+        android:textColorHint="#787777"
+        android:textSize="15dp"
+         android:textAlignment="gravity"
+        android:gravity="center_horizontal"
+        android:typeface="serif"
+        android:drawableTop="@drawable/ic_outline_water_damage_24"
+
+         />
+
+    <TextView
+        android:id="@+id/humidity_text"
+        android:layout_width="178dp"
+        android:layout_height="50dp"
+
+        android:layout_marginStart="220dp"
+        android:layout_marginTop="507dp"
+        android:layout_marginEnd="6dp"
+        android:backgroundTint="#ECECEC"
+        android:elevation="200dp"
+        android:gravity="center_horizontal"
+        android:text="98 "
+        android:textAlignment="gravity"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:typeface="serif"
+        />
+    <Button
+        android:id="@+id/motion"
+        android:layout_width="178dp"
+        android:layout_height="139dp"
+        android:layout_below="@id/subtitle"
+
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="450dp"
+        android:layout_marginBottom="20dp"
+
+        android:backgroundTint="#ECECEC"
+        android:text="Motion"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="15dp"
+        android:textAlignment="gravity"
+        android:gravity="center_horizontal"
+        android:typeface="serif"
+        android:drawableTop="@drawable/ic_baseline_accessibility_24"
+         />
+    <TextView
+        android:id="@+id/motion_text"
+        android:layout_width="178dp"
+        android:layout_height="50dp"
+
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="660dp"
+        android:layout_marginEnd="6dp"
+        android:backgroundTint="#ECECEC"
+        android:elevation="200dp"
+        android:gravity="center_horizontal"
+        android:text="Detected "
+        android:textAlignment="gravity"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:typeface="serif"
+        />
+
+    <Button
+        android:id="@+id/gas"
+        android:layout_width="178dp"
+        android:layout_height="139dp"
+        android:layout_below="@id/subtitle"
+
+
+        android:layout_marginTop="450dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="220dp"
+
+        android:backgroundTint="#ECECEC"
+        android:text="Air Quality"
+        android:textColor="@color/black"
+        android:textColorHint="#0B0600"
+        android:textSize="15dp"
+        android:textAlignment="gravity"
+        android:gravity="center_horizontal"
+        android:typeface="serif"
+        android:drawableTop="@drawable/ic_baseline_waves_24"
+        />
+    <TextView
+        android:id="@+id/air_quality_text"
+        android:layout_width="178dp"
+        android:layout_height="50dp"
+
+        android:layout_marginStart="220dp"
+        android:layout_marginTop="660dp"
+        android:layout_marginEnd="6dp"
+        android:backgroundTint="#ECECEC"
+        android:elevation="200dp"
+        android:gravity="center_horizontal"
+        android:text="25 "
+        android:textAlignment="gravity"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:typeface="serif"
+        />
+
+
+</RelativeLayout>
